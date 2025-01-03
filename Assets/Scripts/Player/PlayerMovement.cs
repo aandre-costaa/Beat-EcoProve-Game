@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
     }
 
-    private void HandleMovement(){
+    public void HandleMovement(){
         if(canMove){
             if(moveLeft){
                 MoveLeft();

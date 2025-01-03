@@ -14,6 +14,9 @@ public class Health : MonoBehaviour
     [SerializeField] private float numFlashes;
     private SpriteRenderer spriteRend;
 
+    [Header("Components")]
+    [SerializeField] private Behaviour[] components;
+
     private void Awake()
     {   
         currentHealth = maxHealth;
@@ -52,5 +55,17 @@ public class Health : MonoBehaviour
             yield return new WaitForSeconds(invincibilityTime / (numFlashes * 2));
         }
         Physics2D.IgnoreLayerCollision(8, 9, false);
+    }
+
+    public void Respawn()
+    {
+        isDead = false;
+        Heal(maxHealth);
+        anim.ResetTrigger("Die");
+        anim.Play("Idle");
+        StartCoroutine(Invincibility());
+
+        foreach(Behaviour component in components)
+            component.enabled = true;
     }
 }

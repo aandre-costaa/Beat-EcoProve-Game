@@ -1,114 +1,237 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections;
+using System.Linq;
 
 public class QuestionSetup : MonoBehaviour
 {
-    [SerializeField] public List<QuestionData> questions;
+    [SerializeField] public List<QuestionData> allQuestions; // All questions fetched from DB
+    private List<QuestionData> remainingQuestionsPool; // Temporary pool of remaining questions
+    private Dictionary<int, List<QuestionData>> doorQuestionsMap; // Maps door index to its questions
     [SerializeField] private TextMeshProUGUI questionText;
     [SerializeField] private TextMeshProUGUI categoryText;
     [SerializeField] private AnswerButton[] answerButtons;
-    [SerializeField] private int correctAnswerChoice;
+    [SerializeField] private GameObject quizCanvas;
+    private CoinManager coinManager;
+
 
     private QuestionData currentQuestion;
-    
-    private void Awake()
+    private int currentDoorIndex = 0;
+    private int currentQuestionIndex = 0;
+
+    private const int TotalQuestionsPerLevel = 8; // Total unique questions per level
+    private const int QuestionsPerDoor = 4;
+
+    private bool isInitialized = false;
+
+    private async void OnEnable()
     {
-        // Chamar todas as perguntas
-        GetQuestionAssets();
+        if (!isInitialized)
+        {
+            await InitializeQuiz();
+            isInitialized = true;
+        }
+
+        StartQuizForDoor(currentDoorIndex);
     }
 
-    // Start is called before the first frame update
-    public void Start()
+    private async System.Threading.Tasks.Task InitializeQuiz()
     {
-        SelectNewQuestion();
-        // Chamar função para definir campos da pergunta
-        SetQuestionValues();
-        // Definir campos das respostas
-        SetAnswerValues();
+        QuestionFetcher fetcher = new QuestionFetcher();
+        allQuestions = await fetcher.FetchQuestionsAsync();
+
+        if (allQuestions.Count >= QuestionsPerDoor)
+        {
+            allQuestions = ShuffleQuestions(allQuestions);
+            AllocateQuestionsToDoors();
+        }
+        else
+        {
+            Debug.LogWarning($"Not enough questions fetched. Found: {allQuestions.Count}");
+            AllocateQuestionsToDoors(); // Allocate what is available
+        }
+
+        quizCanvas.SetActive(false);
     }
 
-    private void GetQuestionAssets()
+    private void AllocateQuestionsToDoors()
     {
-        // Para já, vamos buscar todas as perguntas que existem numa pasta no projeto
-        questions = new List<QuestionData>(Resources.LoadAll<QuestionData>("Questions"));
+        doorQuestionsMap = new Dictionary<int, List<QuestionData>>();
+        int questionCounter = 0;
+
+        for (int doorIndex = 0; doorIndex < allQuestions.Count / QuestionsPerDoor; doorIndex++)
+        {
+            List<QuestionData> questionsForDoor = allQuestions.Skip(questionCounter).Take(QuestionsPerDoor).ToList();
+            doorQuestionsMap[doorIndex] = questionsForDoor;
+            questionCounter += QuestionsPerDoor;
+        }
     }
 
-    private void SelectNewQuestion()
+    public void StartQuizForDoor(int doorIndex)
     {
-        // **Randomização da ordem das perguntas**
-        int randomQuestionIndex = Random.Range(0, questions.Count);
+        if (!doorQuestionsMap.ContainsKey(doorIndex) || doorQuestionsMap[doorIndex].Count == 0)
+        {
+            Debug.LogError($"Door {doorIndex} has no allocated questions.");
+            quizCanvas.SetActive(false);
+            return;
+        }
 
-        // Atribuir o index à perguta atual
-        currentQuestion = questions[randomQuestionIndex];
+        currentDoorIndex = doorIndex;
+        currentQuestionIndex = 0;
+        LoadCurrentQuestion(doorIndex);
+    }
 
-        // Remover a pergunta da lista para não ser repetida
-        questions.RemoveAt(randomQuestionIndex);
+    private void AllocateQuestionsToDoor(int doorIndex)
+    {
+        if (remainingQuestionsPool.Count >= QuestionsPerDoor)
+        {
+            var questionsForDoor = remainingQuestionsPool.Take(QuestionsPerDoor).ToList();
+            remainingQuestionsPool.RemoveRange(0, QuestionsPerDoor);
+            doorQuestionsMap[doorIndex] = questionsForDoor;
+        }
+        else
+        {
+            Debug.LogWarning($"Not enough questions left to allocate for door {doorIndex}");
+            doorQuestionsMap[doorIndex] = new List<QuestionData>(remainingQuestionsPool);
+            remainingQuestionsPool.Clear();
+        }
+    }
+
+    private void LoadCurrentQuestion(int doorIndex)
+    {
+        if (currentQuestionIndex < doorQuestionsMap[doorIndex].Count)
+        {
+            currentQuestion = doorQuestionsMap[doorIndex][currentQuestionIndex];
+            SetQuestionValues();
+            SetAnswerValues();
+        }
+        else
+        {
+            Debug.Log("All questions for this door have been answered.");
+            quizCanvas.SetActive(false);
+        }
     }
 
     private void SetQuestionValues()
     {
-        // Texto da Pergunta apenas
         questionText.text = currentQuestion.question;
-
-        // Categoria da pergunta
         categoryText.text = currentQuestion.category;
     }
 
     private void SetAnswerValues()
     {
-        // Randimização da ordem das respostas
+        ResetAnswerButtons();
+
         List<string> answers = RandomizeAnswers(new List<string>(currentQuestion.answers));
 
-        // Set up the answer buttons
         for (int i = 0; i < answerButtons.Length; i++)
         {
-            // Variável temporária para definir se a resposta é correta
-            bool isCorrect = false;
-
-            // quando encontra o index da resposta correta, define a resposta como correta
-            if(i == correctAnswerChoice)
-            {
-                isCorrect = true;
-            }
-
+            bool isCorrect = answers[i] == currentQuestion.correctAnswer;
             answerButtons[i].SetIsCorrect(isCorrect);
-            //Injeção do texto para a opção de resposta
             answerButtons[i].SetAnswerText(answers[i]);
+            answerButtons[i].questionSetup = this;
         }
     }
 
-    // LÓGICA DE RANDOMIZAÇÃO DA ORDEM DAS RESPOSTAS
+    private void ResetAnswerButtons()
+    {
+        foreach (var button in answerButtons)
+        {
+            button.ResetColor();
+            button.SetIsCorrect(false);
+        }
+    }
+
     private List<string> RandomizeAnswers(List<string> originalList)
     {
-        // True quando se encontra a resposta correta
-        bool correctAnswerChosen = false;
-
-        // Lista temporária para guardar a ordem de respostas
-        List<string> newList = new List<string>();
-
-        Debug.Log("Original List: " + originalList.Count);
-        Debug.Log("Lenght: " + answerButtons.Length);
-        //answerButtons vem dos botoes de resposta adicionados no QuestionData (/Resources/Questions)
-        for(int i = 0; i < answerButtons.Length; i++)
-        {
-            // Randomiza um valor consoante os existentes na lista
-            int random = Random.Range(0, originalList.Count);
-
-            // Uma vez que a resposta correta esta sempre na primeira posição, se a resposta correta já foi definida não faz nada
-            if(random == 0 && !correctAnswerChosen)
-            {
-                correctAnswerChoice = i;
-                correctAnswerChosen = true;
-            }
-
-            // Adiciona a resposta randomizada à lista temporária
-            newList.Add(originalList[random]);
-            //Remove a resposta da lista original para não ser repetida
-            originalList.RemoveAt(random);  
-        }
-
-
-        return newList;
+        return originalList.OrderBy(_ => Random.value).ToList();
     }
+
+    private List<QuestionData> ShuffleQuestions(List<QuestionData> questions)
+    {
+        return questions.OrderBy(_ => Random.value).ToList();
+    }
+
+    public void OnCorrectAnswer(AnswerButton selectedButton)
+    {
+        CoinManager.Instance.AddCoins(1);
+        DisableOtherButtons(selectedButton);
+        StartCoroutine(DelayNextQuestion(2f));
+    }
+
+    private IEnumerator DelayNextQuestion(float delaySeconds)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < doorQuestionsMap[currentDoorIndex].Count)
+        {
+           
+            LoadCurrentQuestion(currentDoorIndex);
+            EnableAllButtons(); // Enable all buttons for the next question
+        }
+        else
+        {
+            //PrepareNextDoor();
+            EndQuiz();
+            EnableAllButtons();
+        }
+    }
+
+    public void PrepareNextDoor()
+    {
+        Debug.Log("TESE!");
+        currentDoorIndex++;
+        StartQuizForDoor(currentDoorIndex);
+    }
+
+    public void OnIncorrectAnswer()
+    {
+        Debug.Log("Incorrect answer!");
+        DisableAllAnswerButtons();
+        StartCoroutine(DelayNextQuestion(2f));
+    }
+
+    public void DisableOtherButtons(AnswerButton selectedButton)
+    {
+        foreach (var button in answerButtons)
+        {
+            if (button != selectedButton) // Disable all except the selected button
+            {
+                button.DisableButton();
+            }
+        }
+    }
+
+    public void EnableAllButtons()
+    {
+        foreach (var button in answerButtons)
+        {
+            button.ResetColor(); // Reset to default appearance
+            button.EnableButton();
+        }
+    }
+    public void DisableAllAnswerButtons()
+    {
+        foreach (var button in answerButtons)
+        {
+            button.DisableButton();
+        }
+    }
+
+    private void EndQuiz()
+    {
+        Debug.Log("Quiz finished!");
+
+        if (quizCanvas != null)
+        {
+            quizCanvas.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("QuizCanvas is not assigned in the inspector.");
+        }
+    }
+
 }

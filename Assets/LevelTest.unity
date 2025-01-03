@@ -1309,7 +1309,7 @@ MonoBehaviour:
   - {fileID: 1883367094}
   - {fileID: 1357483618}
   - {fileID: 1893352507}
-  correctAnswerChoice: 0
+  quizCanvas: {fileID: 624276346}
 --- !u!1001 &336457209
 PrefabInstance:
   m_ObjectHideFlags: 0
