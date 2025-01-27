@@ -38,6 +38,7 @@ public class QuestionFetcher : MonoBehaviour
                 {
                     question = question.TextoPergunta,
                     category = question.Categoria,
+                    tempoLimite = question.TempoLimite,
                     answers = GenerateAnswers(question),
                     correctAnswer = GetCorrectAnswer(question)
                 };
