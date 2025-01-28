@@ -8,6 +8,7 @@ public class CoinManager : MonoBehaviour
     public static CoinManager Instance { get; private set; }
     private int totalCoins = 0;
     public Text coinText;
+
     private void Awake()
     {
         if (Instance == null)

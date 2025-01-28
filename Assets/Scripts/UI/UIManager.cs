@@ -62,6 +62,12 @@ public class UIManager : MonoBehaviour
         Time.timeScale = isPaused ? 0 : 1; // Controla o tempo do jogo
     }
 
+    public void PauseGameFinished(bool status)
+    {
+        isPaused = status;
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
     public void TogglePause()
     {
         // Alterna entre pausa e jogo
