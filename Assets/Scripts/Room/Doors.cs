@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Door : MonoBehaviour
@@ -5,6 +6,33 @@ public class Door : MonoBehaviour
     [SerializeField] private Transform previousRoom;
     [SerializeField] private Transform nextRoom;
     [SerializeField] private GameObject quizCanvas;
+    private static List<Door> allDoors = new List<Door>(); // List to track all doors
+    private int doorIndex = -1; // Unique index for this door instance
+
+    private void Awake()
+    {
+        // Add the door to the list for indexing
+        allDoors.Add(this);
+    }
+
+    private void Start()
+    {
+        // Assign indices to doors in the correct order
+        AssignIndices();
+    }
+
+    private static void AssignIndices()
+    {
+        // Sort doors by their sibling index in the hierarchy
+        allDoors.Sort((a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
+
+        for (int i = 0; i < allDoors.Count; i++)
+        {
+            allDoors[i].doorIndex = i;
+            Debug.Log($"Door {allDoors[i].name} assigned index {i}");
+        }
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -22,12 +50,7 @@ public class Door : MonoBehaviour
             }
 
             ShowQuizCanvas();
-
-            var questionSetup = quizCanvas.GetComponent<QuestionSetup>();
-            if (questionSetup != null)
-            {
-                questionSetup.StartQuizForDoor(GetDoorIndex());
-            }
+            Debug.Log($"Player triggered Door {doorIndex}");
         }
     }
 
@@ -47,4 +70,9 @@ public class Door : MonoBehaviour
             Debug.LogWarning("QuizCanvas is not assigned in the inspector.");
         }
     }
+
+    //public int GetDoorIndex()
+    //{
+    //    return doorIndex;
+    //}
 }
