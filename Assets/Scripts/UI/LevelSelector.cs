@@ -4,16 +4,36 @@ using UnityEngine.UI;
 
 public class LevelSelector : MonoBehaviour
 {
-    public Button[] levelButtons; 
+    public Button[] levelButtons;
 
     private void Start()
     {
-        // Assign click listeners to each button
+        int lastCompletedLevel = PlayerPrefs.GetInt("LastCompletedLevel", 0);
+        Debug.Log("LastCompleted: " + lastCompletedLevel);
         for (int i = 0; i < levelButtons.Length; i++)
         {
             int levelIndex = i + 1; 
-            levelButtons[i].onClick.AddListener(() => LoadLevel(levelIndex));
+
+            
+            if (levelIndex == 1 || lastCompletedLevel >= (levelIndex - 1))
+            {
+                levelButtons[i].interactable = true;
+                levelButtons[i].onClick.AddListener(() => LoadLevel(levelIndex));
+            }
+            else
+            {
+                levelButtons[i].interactable = false; 
+            }
         }
+
+    }
+
+    //Apenas foi usado para teste para fazer a limpeza dos dados do local storage
+    private void ClearPlayerData()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        Debug.Log("Todos os dados do jogador foram apagados!");
     }
 
     private void LoadLevel(int levelIndex)
