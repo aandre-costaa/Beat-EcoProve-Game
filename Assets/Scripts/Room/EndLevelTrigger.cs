@@ -47,7 +47,7 @@ public class EndLevelTrigger : MonoBehaviour
             // Display collected coins and level completion
             if (popupText != null)
             {
-                popupText.text = $"Level {levelNumber} Completed!\nCoins Collected: {totalCoins}";
+                popupText.text = $"NÃ­vel {levelNumber} ConcluÃ­do!\nEcoCoins ganhas: {totalCoins}";
             }
         }
     }
@@ -87,7 +87,7 @@ public class EndLevelTrigger : MonoBehaviour
             PlayerPrefs.SetInt("LastCompletedLevel", levelNumber);
         }
 
-        // Guarda a informação
+        // Guarda a informaï¿½ï¿½o
         PlayerPrefs.Save();
 
         // Debug para ver se funciona
