@@ -9,10 +9,10 @@ public class LevelSelector : MonoBehaviour
 
     private Dictionary<int, string> levelCategories = new Dictionary<int, string>()
     {
-        { 1, "Sustentabilidade no setor têxtil" },
-        { 2, "Impactos ambientais do setor têxtil" },
-        { 3, "Impactos ambientais do setor têxtil" },
-        { 4, "Impactos ambientais do setor têxtil" }
+        { 1, "Sustainability in the textile sector" },
+        { 2, "Environmental impacts of the textile sector" },
+        { 3, "Environmental impacts of the textile sector" },
+        { 4, "Environmental impacts of the textile sector" }
     };
 
     private void Start()
