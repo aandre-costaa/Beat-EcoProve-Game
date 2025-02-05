@@ -1205,7 +1205,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Venceste!
+  m_Text: You Win!
 --- !u!222 &180414890
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5966,7 +5966,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Recome\xE7ar"
+  m_text: Restart
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -7918,7 +7918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Menu inicial
+  m_text: Main Menu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -8784,7 +8784,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Perdeste
+  m_Text: You Lost
 --- !u!222 &1291612458
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9775,7 +9775,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Continuar
+  m_text: Resume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -11658,7 +11658,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Pausa
+  m_Text: Pause
 --- !u!222 &1757739585
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11956,7 +11956,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Tempo: '
+  m_text: 'Time: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -12818,7 +12818,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sair
+  m_text: Leave
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -13238,7 +13238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sair
+  m_text: Leave
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}

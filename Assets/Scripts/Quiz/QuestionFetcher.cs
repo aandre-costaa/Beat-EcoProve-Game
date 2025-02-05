@@ -59,14 +59,14 @@ public class QuestionFetcher : MonoBehaviour
         List<string> answers = new List<string>();
 
         // Add answers based on the question type
-        if (question.TipoPergunta == "Verdadeiro/Falso")
+        if (question.TipoPergunta == "True/False")
         {
             foreach (var vf in question.VerdadeiroFalsos)
             {
                 answers.Add(vf.Correta ? "True" : "False");
             }
         }
-        else if (question.TipoPergunta == "Escolha Múltipla")
+        else if (question.TipoPergunta == "Multiple Choice")
         {
             foreach (var em in question.EscolhaMultiplas)
             {
@@ -80,7 +80,7 @@ public class QuestionFetcher : MonoBehaviour
     private string GetCorrectAnswer(QuestionDto question)
     {
         // Determine the correct answer based on the question type
-        if (question.TipoPergunta == "Verdadeiro/Falso")
+        if (question.TipoPergunta == "True/False")
         {
             foreach (var vf in question.VerdadeiroFalsos)
             {
@@ -90,7 +90,7 @@ public class QuestionFetcher : MonoBehaviour
                 }
             }
         }
-        else if (question.TipoPergunta == "Escolha Múltipla")
+        else if (question.TipoPergunta == "Multiple Choice")
         {
             foreach (var em in question.EscolhaMultiplas)
             {

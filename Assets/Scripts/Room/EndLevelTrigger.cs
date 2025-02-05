@@ -47,7 +47,7 @@ public class EndLevelTrigger : MonoBehaviour
             // Display collected coins and level completion
             if (popupText != null)
             {
-                popupText.text = $"Nível {levelNumber} Concluído!\nEcoCoins ganhas: {totalCoins}";
+                popupText.text = $"Level {levelNumber} completed!\nEcoCoins collected: {totalCoins}";
             }
         }
     }

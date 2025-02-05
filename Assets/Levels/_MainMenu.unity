@@ -715,7 +715,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Prova o teu conhecimento de sustentabilidade!
+  m_text: Prove your sustainability knowledge!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -1475,7 +1475,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cae0a10f85df19b48b906a182e8f8597, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9bbc93993da2a7c4586b2db5af0ae1cb, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2863,7 +2863,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "N\xEDvel"
+  m_text: Level
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
   m_sharedMaterial: {fileID: -2314249956311036905, guid: bcb4cb3e9c1f4b546b9b02562eb2c571, type: 2}
@@ -3148,7 +3148,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 23d930c7dfb93db4093a06dbcb7447c4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 75e4d13b201226f4088a254b7ffaaffd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
