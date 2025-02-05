@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -5,6 +6,14 @@ using UnityEngine.UI;
 public class LevelSelector : MonoBehaviour
 {
     public Button[] levelButtons;
+
+    private Dictionary<int, string> levelCategories = new Dictionary<int, string>()
+    {
+        { 1, "Sustentabilidade no setor têxtil" },
+        { 2, "Impactos ambientais do setor têxtil" },
+        { 3, "Impactos ambientais do setor têxtil" },
+        { 4, "Impactos ambientais do setor têxtil" }
+    };
 
     private void Start()
     {
@@ -39,6 +48,16 @@ public class LevelSelector : MonoBehaviour
     private void LoadLevel(int levelIndex)
     {
         string sceneName = "SampleScene" + levelIndex;
+
+        if (levelCategories.ContainsKey(levelIndex))
+        {
+            PlayerPrefs.SetString("SelectedCategory", levelCategories[levelIndex]);
+        }
+        else
+        {
+            PlayerPrefs.SetString("SelectedCategory", "Unknown");
+        }
+
         SceneManager.LoadScene(sceneName);
     }
 

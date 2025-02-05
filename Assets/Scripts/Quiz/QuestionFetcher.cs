@@ -4,17 +4,24 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
 using Newtonsoft.Json;
+using System;
 
 public class QuestionFetcher : MonoBehaviour
 {
     private static readonly HttpClient client = new HttpClient();
-    private const string ApiUrl = "https://localhost:44345/api/Question/GetAllQuestion"; 
+    private const string ApiUrl = "https://localhost:44345/api/Question/GetAllQuestion";
+    private const string ApiBaseUrl = "https://localhost:44345/api/Question/GetAllQuestionCategory";
+
 
     public async Task<List<QuestionData>> FetchQuestionsAsync()
     {
         try
         {
-            HttpResponseMessage response = await client.GetAsync(ApiUrl);
+            string category = PlayerPrefs.GetString("SelectedCategory", "Unknown");
+
+            string requestUrl = $"{ApiBaseUrl}/{Uri.EscapeDataString(category)}";
+
+            HttpResponseMessage response = await client.GetAsync(requestUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             Debug.Log(responseBody);
