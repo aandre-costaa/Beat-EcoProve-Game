@@ -8,6 +8,7 @@ public class Door : MonoBehaviour
     [SerializeField] private GameObject quizCanvas;
     private static List<Door> allDoors = new List<Door>(); // List to track all doors
     private int doorIndex = -1; // Unique index for this door instance
+    private static HashSet<int> passedDoors = new HashSet<int>(); // Set to track passed doors
 
     private void Awake()
     {
@@ -36,7 +37,8 @@ public class Door : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+
+        if (collision.CompareTag("Player"))
         {
             if (collision.transform.position.x < transform.position.x)
             {
@@ -49,7 +51,12 @@ public class Door : MonoBehaviour
                 nextRoom.GetComponent<Room>().ActivateRoom(false);
             }
 
-            ShowQuizCanvas();
+            if (!passedDoors.Contains(doorIndex)) // Check if door was passed before
+            {
+                ShowQuizCanvas();
+                passedDoors.Add(doorIndex); // Mark door as passed
+            }
+
             Debug.Log($"Player triggered Door {doorIndex}");
         }
     }
