@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float horizontalInput;
     private Rigidbody2D body;
     private Animator animator;
     private BoxCollider2D boxCollider;
-    [SerializeField]private float speed;
-    [SerializeField]private float jumpPower;
-    [SerializeField]private LayerMask groundLayer;
+    
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private LayerMask groundLayer;
 
-    //Controls
+    // Controls
     private bool moveLeft;
     private bool canMove;
 
-    private void Awake(){
-        //Inicializar as variáveis com referencia aos componentes
+    private void Awake()
+    {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
@@ -23,65 +23,101 @@ public class PlayerMovement : MonoBehaviour
         canMove = false;
     }
 
-    private void Update(){
-        //Verificar se o player está no chão
+    private void Update()
+    {
         animator.SetBool("Grounded", isGrounded());
         
         HandleMovement();
-    }
 
-    public void HandleMovement(){
-        if(canMove){
-            if(moveLeft){
-                MoveLeft();
-            }else if(!moveLeft){
-                MoveRight();
-            }
-        }else{
-            Stopmovement();
+        // Handle Jump input
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        {
+            Jump();
         }
     }
 
-    public void AllowMovement(bool movement){
+    private void HandleMovement()
+    {
+        if (canMove || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            if (moveLeft || Input.GetKey(KeyCode.A))
+            {
+                MoveLeft();
+            }
+            else if (!moveLeft || Input.GetKey(KeyCode.D))
+            {
+                MoveRight();
+            }
+        }
+        else
+        {
+            StopMovement();
+        }
+    }
+
+    public void AllowMovement(bool movement)
+    {
         canMove = true;
         moveLeft = movement;
         animator.SetBool("Run", true);
     }
 
-    public void CancelMovement(){
+    public void CancelMovement()
+    {
         canMove = false;
         animator.SetBool("Run", false);
-    } 
+    }
 
-    public void MoveLeft(){
+    public void MoveLeft()
+    {
         transform.localScale = new Vector3(-1, 1, 1);
-        body.velocity = new Vector2(speed * -1, body.velocity.y);
-    }
 
-    public void MoveRight(){
-        transform.localScale = Vector3.one;
-        body.velocity = new Vector2(speed, body.velocity.y);
-    }
-
-    public void Jump(){
-        if(isGrounded()){
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
-            animator.SetTrigger("Jump");
+        // Only apply force if velocity is below the max speed
+        if (Mathf.Abs(body.velocity.x) < speed)
+        {
+            body.velocity = new Vector2(-speed, body.velocity.y);
         }
     }
 
-    private void Stopmovement(){
+
+    public void MoveRight()
+    {
+        transform.localScale = Vector3.one;
+
+        // Only apply force if velocity is below the max speed
+        if (Mathf.Abs(body.velocity.x) < speed)
+        {
+            body.velocity = new Vector2(speed, body.velocity.y);
+        }
+    }
+
+
+    private void Jump()
+    {
+        body.velocity = new Vector2(body.velocity.x, jumpPower);
+        animator.SetTrigger("Jump");
+    }
+
+    private void StopMovement()
+    {
         body.velocity = new Vector2(0, body.velocity.y);
     }
 
-    // Verifica se o player está no chão (se sim, true, se não, false)
-    private bool isGrounded(){
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+    private bool isGrounded()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(
+            boxCollider.bounds.center, 
+            boxCollider.bounds.size, 
+            0, 
+            Vector2.down, 
+            0.1f, 
+            groundLayer
+        );
         return raycastHit.collider != null;
     }
 
-    public bool canAttack(){
-        return horizontalInput == 0 && isGrounded();
+    public bool canAttack()
+    {
+        return body.velocity.x == 0 && isGrounded();
     }
-
 }
