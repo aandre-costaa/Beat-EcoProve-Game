@@ -40,8 +40,39 @@ public class QuestionSetup : MonoBehaviour
         StartQuizForDoor(currentDoorIndex);
     }
 
+    //private async System.Threading.Tasks.Task InitializeQuiz()
+    //{
+    //    //quizCanvas.SetActive(false);
+    //    QuestionFetcher fetcher = new QuestionFetcher();
+    //    allQuestions = await fetcher.FetchQuestionsAsync();
+    //    //quizCanvas.SetActive(false);
+    //    if (allQuestions.Count >= QuestionsPerDoor)
+    //    {
+    //        Debug.Log($"Teste das perguntas ---- {allQuestions.Count}");
+    //        allQuestions = ShuffleQuestions(allQuestions);
+    //        AllocateQuestionsToDoors();
+    //    }
+    //    else
+    //    {
+    //        Debug.LogWarning($"Not enough questions fetched. Found: {allQuestions.Count}");
+    //        AllocateQuestionsToDoors(); // Allocate what is available
+    //    }
+
+    //    quizCanvas.SetActive(false);
+    //}
+
     private async System.Threading.Tasks.Task InitializeQuiz()
     {
+        CanvasGroup canvasGroup = quizCanvas.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = quizCanvas.AddComponent<CanvasGroup>();
+        }
+        canvasGroup.alpha = 0;          
+        canvasGroup.interactable = false; 
+        canvasGroup.blocksRaycasts = false; 
+
+        // Fetch questions and prepare quiz
         QuestionFetcher fetcher = new QuestionFetcher();
         allQuestions = await fetcher.FetchQuestionsAsync();
 
@@ -53,7 +84,7 @@ public class QuestionSetup : MonoBehaviour
         else
         {
             Debug.LogWarning($"Not enough questions fetched. Found: {allQuestions.Count}");
-            AllocateQuestionsToDoors(); // Allocate what is available
+            AllocateQuestionsToDoors(); 
         }
 
         quizCanvas.SetActive(false);
@@ -103,16 +134,37 @@ public class QuestionSetup : MonoBehaviour
         }
     }
 
+    //public void StartQuizForDoor(int doorIndex)
+    //{
+    //    //Debug.Log("DOOR INDEX: " + doorIndex);
+    //    if (!doorQuestionsMap.ContainsKey(doorIndex) || doorQuestionsMap[doorIndex].Count == 0)
+    //    {
+    //        Debug.LogError($"Door {doorIndex} has no allocated questions.");
+    //        quizCanvas.SetActive(false);
+    //        return;
+    //    }
+
+    //    currentDoorIndex = doorIndex;
+    //    currentQuestionIndex = 0;
+    //    LoadCurrentQuestion(doorIndex);
+    //}
+
     public void StartQuizForDoor(int doorIndex)
     {
-        //Debug.Log("DOOR INDEX: " + doorIndex);
         if (!doorQuestionsMap.ContainsKey(doorIndex) || doorQuestionsMap[doorIndex].Count == 0)
         {
             Debug.LogError($"Door {doorIndex} has no allocated questions.");
-            quizCanvas.SetActive(false);
             return;
         }
 
+        CanvasGroup canvasGroup = quizCanvas.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+        //quizCanvas.SetActive(true);
         currentDoorIndex = doorIndex;
         currentQuestionIndex = 0;
         LoadCurrentQuestion(doorIndex);
@@ -234,10 +286,18 @@ public class QuestionSetup : MonoBehaviour
         return questions.OrderBy(_ => Random.value).ToList();
     }
 
+
     public void OnCorrectAnswer(AnswerButton selectedButton)
     {
         CoinManager.Instance.AddCoins(1);
         DisableOtherButtons(selectedButton);
+
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+
         StartCoroutine(DelayNextQuestion(2f));
     }
 
@@ -267,26 +327,31 @@ public class QuestionSetup : MonoBehaviour
         StartQuizForDoor(currentDoorIndex);
     }
 
+
     public void OnIncorrectAnswer()
     {
         Debug.Log("Incorrect answer!");
         Health playerHealth = FindObjectOfType<Health>();
         if (playerHealth != null)
         {
-            playerHealth.TakeDamage(1); // Adjust the damage value as needed
+            playerHealth.TakeDamage(1); 
+
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                timerCoroutine = null;
+            }
+
             if (!playerHealth.isDead)
             {
                 DisableAllAnswerButtons();
                 StartCoroutine(DelayNextQuestion(2f));
-
             }
             else
             {
                 quizCanvas.SetActive(false);
             }
         }
-        //DisableAllAnswerButtons();
-        //StartCoroutine(DelayNextQuestion(2f));
     }
 
     public void DisableOtherButtons(AnswerButton selectedButton)

@@ -78,6 +78,16 @@ public class Door : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        allDoors.Remove(this);
+
+        if (allDoors.Count == 0)
+        {
+            passedDoors.Clear();
+        }
+    }
+
     //public int GetDoorIndex()
     //{
     //    return doorIndex;
