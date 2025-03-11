@@ -274,9 +274,19 @@ public class QuestionSetup : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(1); // Adjust the damage value as needed
+            if (!playerHealth.isDead)
+            {
+                DisableAllAnswerButtons();
+                StartCoroutine(DelayNextQuestion(2f));
+
+            }
+            else
+            {
+                quizCanvas.SetActive(false);
+            }
         }
-        DisableAllAnswerButtons();
-        StartCoroutine(DelayNextQuestion(2f));
+        //DisableAllAnswerButtons();
+        //StartCoroutine(DelayNextQuestion(2f));
     }
 
     public void DisableOtherButtons(AnswerButton selectedButton)
