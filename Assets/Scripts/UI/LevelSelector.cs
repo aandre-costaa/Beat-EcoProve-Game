@@ -47,7 +47,7 @@ public class LevelSelector : MonoBehaviour
 
     private void LoadLevel(int levelIndex)
     {
-        string sceneName = "SampleScene" + levelIndex;
+        string sceneName = "LevelScene" + levelIndex;
 
         if (levelCategories.ContainsKey(levelIndex))
         {

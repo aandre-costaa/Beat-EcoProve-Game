@@ -8,10 +8,10 @@ public class LevelManager : MonoBehaviour
     public int GetCurrentLevel()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName.StartsWith("SampleScene"))
+        if (sceneName.StartsWith("LevelScene"))
         {
             
-            string levelNumberString = sceneName.Substring(11); 
+            string levelNumberString = sceneName.Substring(10); 
             if (int.TryParse(levelNumberString, out int levelNumber))
             {
                 return levelNumber;
