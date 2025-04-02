@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
+    private Vector3 startingPosition;
 
     // Controls
     private bool moveLeft;
@@ -21,6 +22,14 @@ public class PlayerMovement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
 
         canMove = false;
+
+    }
+
+    private void Start()
+    {
+        Time.timeScale = 1f;
+        startingPosition = new Vector3(-19, -12, 0);
+        ResetPlayer();
     }
 
     private void Update()
@@ -119,5 +128,17 @@ public class PlayerMovement : MonoBehaviour
     public bool canAttack()
     {
         return body.velocity.x == 0 && isGrounded();
+    }
+
+    public void ResetPlayer()
+    {
+        transform.position = startingPosition;
+        body.velocity = Vector2.zero;
+        canMove = false;
+        moveLeft = false;
+
+        // Reset animations
+        animator.SetBool("Run", false);
+        animator.SetBool("Grounded", true);
     }
 }

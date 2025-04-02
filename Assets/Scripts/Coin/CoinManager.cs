@@ -14,7 +14,7 @@ public class CoinManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
+            //DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
         else
         {
