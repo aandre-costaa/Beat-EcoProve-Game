@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
 
         canMove = false;
@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveLeft()
     {
-        transform.localScale = new Vector3(-1, 1, 1);
+        transform.localScale = new Vector3(-3, 3, 3);
 
         // Only apply force if velocity is below the max speed
         if (Mathf.Abs(body.velocity.x) < speed)
@@ -91,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveRight()
     {
-        transform.localScale = Vector3.one;
+        transform.localScale = new Vector3(3, 3, 3);
 
         // Only apply force if velocity is below the max speed
         if (Mathf.Abs(body.velocity.x) < speed)
@@ -103,8 +103,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        body.velocity = new Vector2(body.velocity.x, jumpPower);
-        animator.SetTrigger("Jump");
+        if (isGrounded()) {
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            animator.SetTrigger("Jump");
+        }
     }
 
     private void StopMovement()

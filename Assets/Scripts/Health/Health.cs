@@ -20,8 +20,8 @@ public class Health : MonoBehaviour
     private void Awake()
     {   
         currentHealth = maxHealth;
-        anim = GetComponent<Animator>();
-        spriteRend = GetComponent<SpriteRenderer>();
+        anim = GetComponentInChildren<Animator>();
+        spriteRend = GetComponentInChildren<SpriteRenderer>();
     }
     public void TakeDamage(float damage)
     {
@@ -49,7 +49,7 @@ public class Health : MonoBehaviour
         Physics2D.IgnoreLayerCollision(8, 9, true);
         for (int i = 0; i < numFlashes; i++)
         {
-            spriteRend.color = new Color(1, 1, 1, 0.5f);
+            spriteRend.color = new Color(1, 0.5f, 0.5f, 0.5f);
             yield return new WaitForSeconds(invincibilityTime / (numFlashes * 2));
             spriteRend.color = Color.white;
             yield return new WaitForSeconds(invincibilityTime / (numFlashes * 2));
