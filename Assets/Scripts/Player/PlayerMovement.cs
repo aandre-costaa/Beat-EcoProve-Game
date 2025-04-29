@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
-        startingPosition = new Vector3(-19, -12, 0);
+        startingPosition = new Vector3(-19.035f, -12.256f, 0);
         ResetPlayer();
     }
 
