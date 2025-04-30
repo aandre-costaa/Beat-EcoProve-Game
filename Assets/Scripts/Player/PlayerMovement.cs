@@ -22,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
 
         canMove = false;
-
     }
 
     private void Start()
@@ -35,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         animator.SetBool("Grounded", isGrounded());
+        //animator.SetBool("Jump", !isGrounded());
         
         HandleMovement();
 
@@ -47,16 +47,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (canMove || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        bool inputLeft = Input.GetKey(KeyCode.A);
+        bool inputRight = Input.GetKey(KeyCode.D);
+
+        if (canMove || inputLeft || inputRight)
         {
-            if (moveLeft || Input.GetKey(KeyCode.A))
-            {
+            if (moveLeft || inputLeft)
                 MoveLeft();
-            }
-            else if (!moveLeft || Input.GetKey(KeyCode.D))
-            {
+            else if (!moveLeft || inputRight)
                 MoveRight();
-            }
         }
         else
         {
@@ -105,7 +104,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded()) {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
-            animator.SetTrigger("Jump");
+            //animator.SetBool("Jump", true);
+            animator.SetTrigger("Jump_Trigger");
         }
     }
 
