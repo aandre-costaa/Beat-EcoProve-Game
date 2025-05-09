@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
+
+    [SerializeField] private AudioClip jumpSound;
     private Vector3 startingPosition;
 
     // Controls
@@ -106,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             //animator.SetBool("Jump", true);
             animator.SetTrigger("Jump_Trigger");
+            SoundManager.Instance.PlaySound(jumpSound); 
         }
     }
 

@@ -4,6 +4,7 @@ public class EnemiyProjectile : EnemyDamage
 {
     [SerializeField] private float speed;
     [SerializeField] private float resetTime;
+    [SerializeField] private AudioClip hitSound;
 
     private float lifeTime;
 
@@ -26,8 +27,9 @@ public class EnemiyProjectile : EnemyDamage
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
+    private new void OnTriggerEnter2D(Collider2D collision){
         base.OnTriggerEnter2D(collision);
+        SoundManager.Instance.PlaySound(hitSound);
         gameObject.SetActive(false);
     }
 }

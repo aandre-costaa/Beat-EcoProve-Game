@@ -11,6 +11,9 @@ public class FireTrap : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private float damage;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip activationSound;
+
     private Animator anim;
     private SpriteRenderer spriteRend;
 
@@ -31,6 +34,7 @@ public class FireTrap : MonoBehaviour
             if(!trigger)
             {
                 StartCoroutine(ActivateTrap());
+                StartCoroutine(PlaySoundWithDelay(activationTime));
             }
 
             if(active)
@@ -53,5 +57,12 @@ public class FireTrap : MonoBehaviour
         active = false;
         trigger = false;
         anim.SetBool("Activated", false);
+    }
+
+    private IEnumerator PlaySoundWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SoundManager.Instance.PlaySound(activationSound);
     }
 }

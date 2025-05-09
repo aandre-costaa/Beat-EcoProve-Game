@@ -147,6 +147,7 @@ MonoBehaviour:
   activationTime: 1
   activeTime: 2
   damage: 1
+  activationSound: {fileID: 8300000, guid: 7fefdc2d65a491545a8f8a3ab534696f, type: 3}
 --- !u!95 &2483131752114772625
 Animator:
   serializedVersion: 5

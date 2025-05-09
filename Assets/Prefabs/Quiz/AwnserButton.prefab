@@ -282,3 +282,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   answerText: {fileID: 2380266566012498316}
   questionSetup: {fileID: 0}
+  correctSound: {fileID: 8300000, guid: 358dfd8bf520fb7469bc423fdd7bd3be, type: 3}
+  wrongSound: {fileID: 8300000, guid: 635d896fba9e8854a858e29a21bd17e2, type: 3}

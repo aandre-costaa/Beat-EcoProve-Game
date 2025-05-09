@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class LevelSelector : MonoBehaviour
 {
     public Button[] levelButtons;
+    [Header("Button Sounds")]
+    [SerializeField] private AudioClip buttonClickSound;
 
     private Dictionary<int, string> levelCategories = new Dictionary<int, string>()
     {
@@ -57,13 +59,14 @@ public class LevelSelector : MonoBehaviour
         {
             PlayerPrefs.SetString("SelectedCategory", "Unknown");
         }
-
+        SoundManager.Instance.PlaySound(buttonClickSound);
         SceneManager.LoadScene(sceneName);
     }
 
 
     public void GoBack()
     {
+        SoundManager.Instance.PlaySound(buttonClickSound);
         SceneManager.LoadScene("_MainMenu");
     }
 }
