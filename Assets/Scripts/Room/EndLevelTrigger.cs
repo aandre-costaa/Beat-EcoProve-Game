@@ -12,6 +12,9 @@ public class EndLevelTrigger : MonoBehaviour
     private CoinManager coinManager;
     private bool levelEnded = false;
     private UIManager uiManager;
+
+    [Header("Sounds")]
+    [SerializeField] private AudioClip winSound;
     
     private void Start()
     {
@@ -33,6 +36,17 @@ public class EndLevelTrigger : MonoBehaviour
             {
                 uiManager.PauseGameFinished(true);
             }
+            
+            var musicManager = GameObject.Find("MusicManager");
+            if (musicManager != null)
+            {
+                var musicAudio = musicManager.GetComponent<AudioSource>();
+                if (musicAudio != null && musicAudio.isPlaying)
+                {
+                    StartCoroutine(FadeOutMusic(musicAudio, 1f)); // 2 seconds fade-out
+                }
+            }
+            SoundManager.Instance.PlaySound(winSound);
 
             Debug.Log($"Finished Level {levelNumber}");
         }
@@ -99,5 +113,23 @@ public class EndLevelTrigger : MonoBehaviour
         Debug.Log($"Coins in Level {levelNumber}: {coinsInLevel}");
         Debug.Log($"Level {levelNumber} data saved locally: Coins = {totalCoins}");
     }
+
+    private IEnumerator FadeOutMusic(AudioSource audioSource, float duration)
+    {
+        float startVolume = audioSource.volume;
+        float timeElapsed = 0f;
+
+        while (timeElapsed < duration)
+        {
+            audioSource.volume = Mathf.Lerp(startVolume, 0f, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        audioSource.volume = 0f;
+        audioSource.Stop();
+        audioSource.volume = startVolume; // Restore for reuse
+    }
+
 
 }

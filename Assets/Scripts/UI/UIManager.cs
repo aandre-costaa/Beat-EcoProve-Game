@@ -5,10 +5,12 @@ public class UIManager : MonoBehaviour
 {
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverScreen;
-    //[SerializeField] private AudioClip gameOverSound;
+    [SerializeField] private AudioClip gameOverSound;
 
     [Header("Pause")]
     [SerializeField] private GameObject pauseScreen;
+
+    [SerializeField] private AudioClip buttonClickSound;
 
     private bool isPaused = false;
     private void Awake()
@@ -30,18 +32,20 @@ public class UIManager : MonoBehaviour
 
     #region Game Over
     public void GameOver()
-    {
+    {   
         gameOverScreen.SetActive(true);
-
+        SoundManager.Instance.PlaySound(gameOverSound);
     }
 
     public void Restart()
     {
+        SoundManager.Instance.PlaySound(buttonClickSound);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void MainMenu()
     {
+        SoundManager.Instance.PlaySound(buttonClickSound);
         SceneManager.LoadScene(0);
     }
 
@@ -58,6 +62,7 @@ public class UIManager : MonoBehaviour
     public void PauseGame(bool status)
     {
         isPaused = status;
+        SoundManager.Instance.PlaySound(buttonClickSound);
         pauseScreen.SetActive(isPaused);
         Time.timeScale = isPaused ? 0 : 1; // Controla o tempo do jogo
     }
@@ -70,6 +75,7 @@ public class UIManager : MonoBehaviour
 
     public void TogglePause()
     {
+        SoundManager.Instance.PlaySound(buttonClickSound);
         // Alterna entre pausa e jogo
         PauseGame(!isPaused);
     }

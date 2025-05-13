@@ -8,6 +8,9 @@ public class Spikehead : EnemyDamage
     [SerializeField] private float checkDelay;
     [SerializeField] private LayerMask playerLayer;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip attackSound;
+
     private Vector3[] directions = new Vector3[4];
     private Vector3 destination;
 
@@ -55,8 +58,9 @@ public class Spikehead : EnemyDamage
         directions[3] = -transform.up * range; //Baixo
     }
     private void Stop()
-    {
+    {   
         destination = transform.position;
+        SoundManager.Instance.PlaySound(attackSound);
         attack = false;
     }
 

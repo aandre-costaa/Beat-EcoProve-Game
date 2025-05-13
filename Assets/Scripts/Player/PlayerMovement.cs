@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
+
+    [SerializeField] private AudioClip jumpSound;
     private Vector3 startingPosition;
 
     // Controls
@@ -18,23 +20,23 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
 
         canMove = false;
-
     }
 
     private void Start()
     {
         Time.timeScale = 1f;
-        startingPosition = new Vector3(-19, -12, 0);
+        startingPosition = new Vector3(-19.035f, -12.256f, 0);
         ResetPlayer();
     }
 
     private void Update()
     {
         animator.SetBool("Grounded", isGrounded());
+        //animator.SetBool("Jump", !isGrounded());
         
         HandleMovement();
 
@@ -47,16 +49,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (canMove || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        bool inputLeft = Input.GetKey(KeyCode.A);
+        bool inputRight = Input.GetKey(KeyCode.D);
+
+        if (canMove || inputLeft || inputRight)
         {
-            if (moveLeft || Input.GetKey(KeyCode.A))
-            {
+            if (moveLeft || inputLeft)
                 MoveLeft();
-            }
-            else if (!moveLeft || Input.GetKey(KeyCode.D))
-            {
+            else if (!moveLeft || inputRight)
                 MoveRight();
-            }
         }
         else
         {
@@ -79,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveLeft()
     {
-        transform.localScale = new Vector3(-1, 1, 1);
+        transform.localScale = new Vector3(-3, 3, 3);
 
         // Only apply force if velocity is below the max speed
         if (Mathf.Abs(body.velocity.x) < speed)
@@ -91,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveRight()
     {
-        transform.localScale = Vector3.one;
+        transform.localScale = new Vector3(3, 3, 3);
 
         // Only apply force if velocity is below the max speed
         if (Mathf.Abs(body.velocity.x) < speed)
@@ -103,8 +104,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        body.velocity = new Vector2(body.velocity.x, jumpPower);
-        animator.SetTrigger("Jump");
+        if (isGrounded()) {
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            //animator.SetBool("Jump", true);
+            animator.SetTrigger("Jump_Trigger");
+            SoundManager.Instance.PlaySound(jumpSound); 
+        }
     }
 
     private void StopMovement()

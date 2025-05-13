@@ -12,6 +12,10 @@ public class AnswerButton : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI answerText;
     [SerializeField] public QuestionSetup questionSetup; // Reference to QuestionSetup
+
+    [Header("Sounds")]
+    [SerializeField] private AudioClip correctSound;
+    [SerializeField] private AudioClip wrongSound;
     private Button button;
 
     void Start()
@@ -39,12 +43,14 @@ public class AnswerButton : MonoBehaviour
             Debug.Log("Correct!");
             colors.color = correctColor;
             questionSetup.OnCorrectAnswer(this); // Pass this button to lock others
+            SoundManager.Instance.PlaySound(correctSound); // Play correct sound
         }
         else
         {
             Debug.Log("Incorrect!");
             colors.color = incorrectColor;
             questionSetup.OnIncorrectAnswer();
+            SoundManager.Instance.PlaySound(wrongSound);
         }
 
         questionSetup.DisableAllAnswerButtons();

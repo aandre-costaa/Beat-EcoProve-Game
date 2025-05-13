@@ -17,11 +17,15 @@ public class Health : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Behaviour[] components;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip deathSound;
+
     private void Awake()
     {   
         currentHealth = maxHealth;
-        anim = GetComponent<Animator>();
-        spriteRend = GetComponent<SpriteRenderer>();
+        anim = GetComponentInChildren<Animator>();
+        spriteRend = GetComponentInChildren<SpriteRenderer>();
     }
     public void TakeDamage(float damage)
     {
@@ -29,11 +33,13 @@ public class Health : MonoBehaviour
         if (currentHealth > 0)
         {
             anim.SetTrigger("Hurt");
+            SoundManager.Instance.PlaySound(hurtSound);
             StartCoroutine(Invincibility());
         }else {
             if (!isDead)
             {   
                 anim.SetTrigger("Die");
+                SoundManager.Instance.PlaySound(deathSound);
                 GetComponent<PlayerMovement>().enabled = false;
                 isDead = true;
             }
@@ -49,7 +55,7 @@ public class Health : MonoBehaviour
         Physics2D.IgnoreLayerCollision(8, 9, true);
         for (int i = 0; i < numFlashes; i++)
         {
-            spriteRend.color = new Color(1, 1, 1, 0.5f);
+            spriteRend.color = new Color(1, 0.5f, 0.5f, 0.5f);
             yield return new WaitForSeconds(invincibilityTime / (numFlashes * 2));
             spriteRend.color = Color.white;
             yield return new WaitForSeconds(invincibilityTime / (numFlashes * 2));

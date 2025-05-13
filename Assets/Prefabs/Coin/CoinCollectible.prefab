@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinValue: 1
+  collectSound: {fileID: 8300000, guid: dbd8d3a4d91e33c44b45fd51d221f8d5, type: 3}
 --- !u!61 &570355699742333977
 BoxCollider2D:
   m_ObjectHideFlags: 0
