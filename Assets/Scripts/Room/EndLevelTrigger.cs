@@ -101,6 +101,10 @@ public class EndLevelTrigger : MonoBehaviour
             PlayerPrefs.SetInt("LastCompletedLevel", levelNumber);
         }
 
+
+        // Parte para guardar o nivel 
+        PlayerPrefs.SetInt("Level_" + levelNumber + "_Completed", 1);
+
         // Guarda a informa��o
         PlayerPrefs.Save();
 
