@@ -40,6 +40,9 @@ public class VerdadeiroFalso
 
     [JsonProperty("correta")]
     public bool Correta { get; set; }
+
+    [JsonProperty("curiosidade")]
+    public string Curiosidade { get; set; }
 }
 
 public class EscolhaMultipla

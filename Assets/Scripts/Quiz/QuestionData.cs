@@ -9,4 +9,5 @@ public class QuestionData : ScriptableObject
     [Tooltip("A resposta correta TEM de estar na primeira posição do array SEMPRE, randomização é feita depois")]
     public string[] answers;
     public string correctAnswer;
+    public string curiosidade;
 }
