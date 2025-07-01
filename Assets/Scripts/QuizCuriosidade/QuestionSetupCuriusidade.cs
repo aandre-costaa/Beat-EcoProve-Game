@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestionSetupCuriusidade : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class QuestionSetupCuriusidade : MonoBehaviour
     [SerializeField] private TextMeshProUGUI categoryText;
     [SerializeField] private AnswerButtonCuriosidade[] answerButtons; // Mudança para AnswerButtonCuriosidade
     [SerializeField] private TextMeshProUGUI timerText; // Display timer
+    [SerializeField] private RectTransform questionPanel; // Container da pergunta para redimensionamento
 
     [Header("Quiz Activation Settings")]
     [SerializeField] private string playerPrefsKey = "ShowCuriosidadeQuiz"; // Chave do PlayerPrefs
@@ -24,9 +26,13 @@ public class QuestionSetupCuriusidade : MonoBehaviour
     private bool hasAnswered = false; // Flag para verificar se já respondeu
     private Coroutine timerCoroutine; // Referência para o coroutine do timer
     private bool isShowingCuriosidade = false; // Flag para saber se está mostrando curiosidade
+    private ContentSizeFitter contentSizeFitter; // Para redimensionamento automático
 
     private async void Start()
     {
+        // Configurar redimensionamento automático
+        SetupDynamicTextSize();
+
         // Se não foi definido manualmente, encontrar o GameObject Quiz pai
         if (quizMainObject == null)
         {
@@ -65,6 +71,42 @@ public class QuestionSetupCuriusidade : MonoBehaviour
         }
     }
 
+    private void SetupDynamicTextSize()
+    {
+        // Se questionPanel não foi definido, tentar encontrar automaticamente
+        if (questionPanel == null)
+        {
+            // Procurar pelo pai do questionText
+            if (questionText != null)
+            {
+                questionPanel = questionText.transform.parent.GetComponent<RectTransform>();
+            }
+        }
+
+        if (questionPanel != null)
+        {
+            // Adicionar Content Size Fitter se não existir
+            if (questionPanel.GetComponent<ContentSizeFitter>() == null)
+            {
+                contentSizeFitter = questionPanel.gameObject.AddComponent<ContentSizeFitter>();
+                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                Debug.Log("Content Size Fitter adicionado ao questionPanel");
+            }
+            else
+            {
+                contentSizeFitter = questionPanel.GetComponent<ContentSizeFitter>();
+            }
+        }
+
+        // Configurar quebra de linha no texto
+        if (questionText != null)
+        {
+            questionText.enableWordWrapping = true;
+            questionText.overflowMode = TextOverflowModes.Overflow;
+        }
+    }
+
     private async void OnEnable()
     {
         // Verificação adicional quando o componente é ativado
@@ -86,10 +128,9 @@ public class QuestionSetupCuriusidade : MonoBehaviour
 
     private bool ShouldShowQuiz()
     {
-        // Verificar se a chave existe no PlayerPrefs
+        // Verificar se a chave existe no PlayerPrefs e se está como true
         if (PlayerPrefs.HasKey(playerPrefsKey))
         {
-            // Obter o valor booleano (usando string para maior clareza)
             string showQuizValue = PlayerPrefs.GetString(playerPrefsKey, "false");
             bool shouldShow = showQuizValue.ToLower() == "true";
 
@@ -204,6 +245,9 @@ public class QuestionSetupCuriusidade : MonoBehaviour
         // Set question text and category
         questionText.text = currentQuestion.question;
         categoryText.text = currentQuestion.category;
+
+        // Forçar atualização do layout após mudança do texto
+        ForceLayoutUpdate();
 
         // Set up True/False buttons
         SetupTrueFalseButtons();
@@ -394,6 +438,9 @@ public class QuestionSetupCuriusidade : MonoBehaviour
             Debug.LogWarning("Curiosidade não disponível ou vazia");
         }
 
+        // Forçar atualização do layout após mudança do texto
+        ForceLayoutUpdate();
+
         // Esconder os botões de resposta
         foreach (AnswerButtonCuriosidade button in answerButtons)
         {
@@ -402,6 +449,15 @@ public class QuestionSetupCuriusidade : MonoBehaviour
 
         // Mostrar texto indicativo no timer
         timerText.text = "Did you know?";
+    }
+
+    private void ForceLayoutUpdate()
+    {
+        // Forçar atualização do layout para redimensionamento automático
+        if (questionPanel != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(questionPanel);
+        }
     }
 
     private void EndQuiz()
@@ -413,6 +469,9 @@ public class QuestionSetupCuriusidade : MonoBehaviour
 
         // Garantir que o timer está parado
         StopTimer();
+
+        // Desativar o quiz após mostrar a curiosidade
+        DeactivateQuiz();
 
         // Hide quiz canvas
         CanvasGroup canvasGroup = quizCanvas.GetComponent<CanvasGroup>();
