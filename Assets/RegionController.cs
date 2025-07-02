@@ -12,7 +12,8 @@ public class MapRegionManager : MonoBehaviour
     {
         //PlayerPrefs.DeleteKey("LastCompletedLevel");
         //PlayerPrefs.Save();
-
+        PlayerPrefs.DeleteKey("Level_1_Completed");
+        PlayerPrefs.Save();
         UpdateRegions();
     }
 

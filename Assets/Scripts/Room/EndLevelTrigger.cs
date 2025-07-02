@@ -112,6 +112,11 @@ public class EndLevelTrigger : MonoBehaviour
         int coinsInLevel = PlayerPrefs.GetInt($"Level_{levelNumber}_Coins", 0);
         Debug.Log($"Coins in Level {levelNumber}: {coinsInLevel}");
         Debug.Log($"Level {levelNumber} data saved locally: Coins = {totalCoins}");
+
+        //Parte para ativar a curiosidade
+        PlayerPrefs.SetString("ShowCuriosidadeQuiz", "true");
+        PlayerPrefs.Save();
+        Debug.Log("Quiz de curiosidade ativado - ShowCuriosidadeQuiz definido como true");
     }
 
     private IEnumerator FadeOutMusic(AudioSource audioSource, float duration)
