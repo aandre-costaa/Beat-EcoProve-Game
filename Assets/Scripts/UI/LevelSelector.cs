@@ -14,7 +14,19 @@ public class LevelSelector : MonoBehaviour
         { 1, "Sustainability in the textile sector" },
         { 2, "Environmental impacts of the textile sector" },
         { 3, "Environmental impacts of the textile sector" },
-        { 4, "Environmental impacts of the textile sector" }
+        { 4, "Environmental impacts of the textile sector" },
+        { 5, "Environmental impacts of the textile sector" },
+        { 6, "Environmental impacts of the textile sector" },
+        { 7, "Environmental impacts of the textile sector" },
+        { 8, "Environmental impacts of the textile sector" },
+        { 9, "Environmental impacts of the textile sector" },
+        { 10, "Environmental impacts of the textile sector" },
+        { 11, "Environmental impacts of the textile sector" },
+        { 12, "Environmental impacts of the textile sector" },
+        { 13, "Environmental impacts of the textile sector" },
+        { 14, "Environmental impacts of the textile sector" },
+        { 15, "Environmental impacts of the textile sector" }
+
     };
 
     private void Start()
