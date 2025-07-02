@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FireTrap : MonoBehaviour
@@ -17,52 +16,47 @@ public class FireTrap : MonoBehaviour
     private Animator anim;
     private SpriteRenderer spriteRend;
 
-    private bool trigger;
     private bool active;
 
-    // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
+        StartCoroutine(ActivateTrapLoop());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player") && active)
         {
-            if(!trigger)
-            {
-                StartCoroutine(ActivateTrap());
-                StartCoroutine(PlaySoundWithDelay(activationTime));
-            }
-
-            if(active)
-            {
-                collision.GetComponent<Health>().TakeDamage(damage);
-            }
+            collision.GetComponent<Health>().TakeDamage(damage);
         }
     }
 
-    private IEnumerator ActivateTrap()
+    private IEnumerator ActivateTrapLoop()
     {
-        trigger = true;
-        spriteRend.color = Color.red;
-        yield return new WaitForSeconds(activationTime);
-        spriteRend.color = Color.white;
-        active = true;
-        anim.SetBool("Activated", true);
+        while (true)
+        {
+            spriteRend.color = Color.red;
+            yield return new WaitForSeconds(activationTime);
 
-        yield return new WaitForSeconds(activeTime);
-        active = false;
-        trigger = false;
-        anim.SetBool("Activated", false);
+            spriteRend.color = Color.white;
+            active = true;
+            anim.SetBool("Activated", true);
+            PlayTrapSound();
+
+            yield return new WaitForSeconds(activeTime);
+
+            active = false;
+            anim.SetBool("Activated", false);
+        }
     }
 
-    private IEnumerator PlaySoundWithDelay(float delay)
+    private void PlayTrapSound()
     {
-        yield return new WaitForSeconds(delay);
-
-        SoundManager.Instance.PlaySound(activationSound);
+        if (SoundManager.Instance != null && activationSound != null)
+        {
+            SoundManager.Instance.PlaySound(activationSound);
+        }
     }
 }
