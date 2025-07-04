@@ -29,6 +29,12 @@ public class EndLevelTrigger : MonoBehaviour
     {
         if (collision.tag == "Player" && !levelEnded)
         {
+            Health playerHealth = collision.GetComponent<Health>();
+            if (playerHealth != null && playerHealth.isDead)
+            {
+                Debug.Log("Player is dead, level completion ignored");
+                return; 
+            }
             levelEnded = true;
             
             SaveLevelDataLocally();
